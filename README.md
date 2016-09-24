@@ -45,7 +45,7 @@ The output should look like this:
 ```
 
 
-### Crontab 
+### Cron Job 
 
 If you want to submit data on a regular basis to [froeling.io](https://froeling.io), I recommend creating a crontab:
 
