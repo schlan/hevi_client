@@ -87,24 +87,24 @@ class SerialClient(object):
 
     result = b''
     holdon = 0
+
     while serial.inWaiting() > 0 or holdon == 0:
       if serial.inWaiting() == 0:
-        sleep(0.05)
-        holdon = 1
+        if self._verify_response(result, False) is True:
+          break
+        else:
+          sleep(0.05)
+          holdon = 1
       else:
         result = result + serial.read(serial.inWaiting())
 
     logging.debug("RX: " + str(binascii.hexlify(result)))
     return_value = {"verified": True, "value": result}
 
-    if self._verify_response(result) is True:
-      if count > self.retry_count:
-        logging.warning("Tried to send frame 10 times, it's not working :(")
-        return_value = {"verified": False, "value": frame}
-    else:
+    if self._verify_response(result) is False:
       logging.warning("RX: invalid frame")
       return_value = {"verified": False, "value": result}
-
+    
     return return_value
   
   def _recover_invalid_responses(self, frames):
@@ -141,7 +141,7 @@ class SerialClient(object):
   def _remove_duplicates(self, responses): 
     return list({v['body']:v for v in responses}.values())
 
-  def _verify_response(self, response):
+  def _verify_response(self, response, log = True):
     if len(response) > 5 and self._decode_frame(response)['header'] == self.frame_header:
       frame = self._decode_frame(response)
       crc = self._crc(frame['header'] + frame['length'] + frame['address'].to_bytes(1, byteorder='big') + frame['body'])
@@ -149,17 +149,19 @@ class SerialClient(object):
       if crc == frame['crc'] and self._frame_length(frame['body']) == frame['length']:
         return True
       else: 
-        if crc != frame['crc']:
-          logging.warning("Verify: crc mismatch")
-        if self._frame_length(frame['body']) == frame['length']:
-          logging.warning("Verify: Frame length mismatch")
+        if log is True:
+          if crc != frame['crc']:
+            logging.warning("Verify: crc mismatch")
+          if self._frame_length(frame['body']) == frame['length']:
+            logging.warning("Verify: Frame length mismatch")
         return False
 
     else:
-      if len(response) > 5 and self._decode_frame(response)['header'] != self.frame_header:
-        logging.warning("Verify: Frame hasn't the right header")
-      elif len(response) < 5:
-        logging.warning("Verify: Frame is too short")
+      if log is True:
+        if len(response) > 5 and self._decode_frame(response)['header'] != self.frame_header:
+          logging.warning("Verify: Frame hasn't the right header")
+        elif len(response) < 5:
+          logging.warning("Verify: Frame is too short")
       return False
 
   def _decode_frame(self, frame):
