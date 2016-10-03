@@ -6,7 +6,7 @@ Load data from Froeling firewood boilers that are using Lambdatronic S3200 and s
 
 Use one of the following links to download the latest version:
 
-- Raspberry PI/Arm based platform: [hevi-0.1.1-arm.tar.gz](https://github.com/schlan/hevi_client/releases/download/v0.1.1/hevi-0.1.1-arm.tar.gz)
+- Raspberry PI/Arm based platform: [hevi-0.1.2-arm.tar.gz](https://github.com/schlan/hevi_client/releases/download/v0.1.1/hevi-0.1.2-arm.tar.gz)
 - Linux x86: [hevi-0.1.1-x86.tar.gz](https://github.com/schlan/hevi_client/releases/download/v0.1.1/hevi-0.1.1-x86.tar.gz)
 
 Extract the downloaded archive:
