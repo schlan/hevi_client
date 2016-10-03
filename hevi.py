@@ -75,13 +75,12 @@ def query_data_and_submit(config):
 
   state['version'] = version['version']
 
-  schema_nw = {} 
   for s in schema:
     s['address'] = fr_hex(s['address'])
 
   data = {
     'timestamp': int(time.time()),
-    'recent_values_schema': schema_nw,
+    'recent_values_schema': schema,
     'recent_values': values,
     'errors': errors,
     'status': state,
