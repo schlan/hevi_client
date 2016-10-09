@@ -34,7 +34,6 @@ def parse_arguments():
   group.add_argument('--genconfig', help='Genarte extra config', action='store_true')
   group.add_argument('--date', help='Load device date and version', action='store_true')
   group.add_argument('--digitalout', help='Load Digital out', action='store_true')
-  digitalout
 
   args = parser.parse_args()
   return args
@@ -154,6 +153,7 @@ def version():
 if __name__ == "__main__":
   args = parse_arguments()
   init_logger(args.verbose)
+  config = HeviConfig(args.config)
 
   if args.version:
     version()
