@@ -13,7 +13,7 @@ def print_circuit_config(menu):
   heat_items = findSubMenuItems(menu, heat['child'])
   circuits = list(filter(lambda x: x['description'].startswith("Heizkreis"), heat_items))
 
-  config = list(map(lambda x: heating_circuites(x['description'], x['child']), circuits))
+  config = list(map(lambda x: heating_circuites(menu, x['description'], x['child']), circuits))
   parser = configparser.ConfigParser()
   for x in config:
     for y in x:
@@ -47,7 +47,7 @@ def toConfig(item, name):
   else: 
     return {}
 
-def heating_circuites(name, child):
+def heating_circuites(menu, name, child):
   sub_menu = findSubMenuItems(menu, child)
 
   state = findItemByName(sub_menu, "Zustand")
