@@ -141,7 +141,7 @@ def date(config):
   t = datetime.fromtimestamp(date['timestamp']).isoformat()
   logging.info("Version: {0} | Date: {1}".format(date['version'], t))
 
-def config(config):
+def gen_config(config):
   client = FroelingClient(config.port)
   menu_entries = client.load_menu_structure()
   print_circuit_config(menu_entries)
@@ -173,6 +173,6 @@ if __name__ == "__main__":
   elif args.date:
     date(config)
   elif args.genconfig:
-    config(config)
+    gen_config(config)
   else:
     logging.info("Please provide an argument")
