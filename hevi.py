@@ -13,6 +13,8 @@ from froeling.FroelingClient import FroelingClient
 from froeling.Configuration import HeviConfig
 from froeling.Network import Network
 
+from froeling.HeatingCircuitGenerator import print_circuit_config
+
 from version import VERSION_STRING
 
 def parse_arguments():
@@ -29,6 +31,7 @@ def parse_arguments():
   group.add_argument('--state', help='Lost state', action='store_true')
   group.add_argument('--errors', help='Load errors', action='store_true')
   group.add_argument('--menu', help='Load menu structure', action='store_true')
+  group.add_argument('--genconfig', help='Genarte extra config', action='store_true')
   group.add_argument('--date', help='Load device date and version', action='store_true')
 
   args = parser.parse_args()
@@ -138,6 +141,11 @@ def date(config):
   t = datetime.fromtimestamp(date['timestamp']).isoformat()
   logging.info("Version: {0} | Date: {1}".format(date['version'], t))
 
+def config(config):
+  client = FroelingClient(config.port)
+  menu_entries = client.load_menu_structure()
+  print_circuit_config(menu_entries)
+
 def version():
   logging.info(VERSION_STRING)
 
@@ -164,5 +172,7 @@ if __name__ == "__main__":
     menu(config)
   elif args.date:
     date(config)
+  elif args.genconfig:
+    config(config)
   else:
     logging.info("Please provide an argument")
