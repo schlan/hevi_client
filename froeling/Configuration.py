@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
+from froeling.FroelingValueConverter import *
 from configparser import ConfigParser
 from sys import exit
 from pathlib import Path
@@ -18,9 +19,44 @@ class HeviConfig(object):
 
       self.port = parser.get('Main', 'port')
       self._exit_if_file_missing(self.port)
+
+      self.heating_curcuits = self._extract_circuits(parser)
+
     else:
       self._exit_with_error('Unable to parse configuration file, [Main] section not found')
   
+
+  def _extract_circuit_values(self, section, name, config):
+    if config.has_option(section, name + '_type') and config.has_option(section, name + '_address') and config.has_option(section, name + '_description'):
+      return {
+        name: {
+          'type': config.getint(section, name + '_type'),
+          'address': fr_parse_byte_string(config.get(section, name + '_address')),
+          'description': config.get(section, name + '_description')
+        }
+      }
+    else:
+      return None
+
+  def _extract_single_circuit(self, parser, section):
+    options = ["pump", "flow_actual", "flow_shall", "mixer_on", "mixer_off", "party"]
+    data = list(map(lambda x: self._extract_circuit_values(section, x, parser), options))
+    result = dict()
+    for x in data:
+      if x:
+        for y in x:
+          result[y] = x[y]
+    return {section.split("|")[1]: result}
+
+  def _extract_circuits(self, parser):
+    hc_config = list(filter(lambda x: x.startswith("hevi_hc|"), parser.sections()))
+    config = list(map(lambda x: self._extract_single_circuit(parser, x), hc_config))
+    result = dict()
+    for x in config:
+      for y in x:
+        result[y] = x[y]
+    return result
+
   def _exit_if_file_missing(self, path):
     path = Path(path)
     if not path.exists():

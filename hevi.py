@@ -153,26 +153,26 @@ if __name__ == "__main__":
   args = parse_arguments()
   init_logger(args.verbose)
   config = HeviConfig(args.config)
-
-  if args.version:
-    version()
-  elif args.submit:
-    query_data_and_submit(config)
-  elif args.test:
-    test_connection(config)
-  elif args.values:
-    values(config)
-  elif args.schema:
-    schema(config)
-  elif args.state:
-    state(config)
-  elif args.errors:
-    errors(config)
-  elif args.menu:
-    menu(config)
-  elif args.date:
-    date(config)
-  elif args.genconfig:
-    gen_config(config)
-  else:
-    logging.info("Please provide an argument")
+  print(config.heating_curcuits)
+  # if args.version:
+  #   version()
+  # elif args.submit:
+  #   query_data_and_submit(config)
+  # elif args.test:
+  #   test_connection(config)
+  # elif args.values:
+  #   values(config)
+  # elif args.schema:
+  #   schema(config)
+  # elif args.state:
+  #   state(config)
+  # elif args.errors:
+  #   errors(config)
+  # elif args.menu:
+  #   menu(config)
+  # elif args.date:
+  #   date(config)
+  # elif args.genconfig:
+  #   gen_config(config)
+  # else:
+  #   logging.info("Please provide an argument")

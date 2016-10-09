@@ -3,6 +3,7 @@
 
 import string
 import binascii
+import ast
 
 def fr_string(bytes):
   return fr_strip(bytes.decode("ISO-8859-1", errors='replace'))
@@ -18,3 +19,6 @@ def fr_int(value):
 
 def fr_hex(value):
   return fr_string(binascii.hexlify(value))
+
+def fr_parse_byte_string(value):
+  return ast.literal_eval(value)

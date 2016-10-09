@@ -17,7 +17,7 @@ def print_circuit_config(menu):
   parser = configparser.ConfigParser()
   for x in config:
     for y in x:
-      parser['hevi|' + y] = x[y]
+      parser['hevi_hc|' + y] = x[y]
   
   print("Plase append the following to your existing configuration:")
   print()
@@ -25,8 +25,7 @@ def print_circuit_config(menu):
   parser.write(sys.stdout)
   print()
   print()
-
-
+  
 def findSubMenuItems(menu, child):
   return list(filter(lambda x: x['parent'] == child, menu))
 
@@ -69,7 +68,7 @@ def heating_circuites(menu, name, child):
       **toConfig(party, 'party'),
       **toConfig(flow_shall, 'flow_shall'),
       **toConfig(flow_actual, 'flow_actual'),
-      **toConfig(mixer_off, 'mixer_on'),
-      **toConfig(mixer_on, 'mixer_off')
+      **toConfig(mixer_on, 'mixer_on'),
+      **toConfig(mixer_off, 'mixer_off')
     }
   }
