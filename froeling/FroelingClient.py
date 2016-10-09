@@ -93,3 +93,8 @@ class FroelingClient(object):
     data = fr_string(result['body'][2:]).split(";")
     value = {'mode': data[0].strip(), 'state': data[1]}
     return value
+
+  def load_digital_output(self, address):
+    result = self.client.single_communication(b'\x44', address)
+    body = result['body']
+    return {'mode': body[0], 'state': body[1]}

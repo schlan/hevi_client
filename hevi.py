@@ -33,6 +33,8 @@ def parse_arguments():
   group.add_argument('--menu', help='Load menu structure', action='store_true')
   group.add_argument('--genconfig', help='Genarte extra config', action='store_true')
   group.add_argument('--date', help='Load device date and version', action='store_true')
+  group.add_argument('--digitalout', help='Load Digital out', action='store_true')
+  digitalout
 
   args = parser.parse_args()
   return args
@@ -152,27 +154,29 @@ def version():
 if __name__ == "__main__":
   args = parse_arguments()
   init_logger(args.verbose)
-  config = HeviConfig(args.config)
-  print(config.heating_curcuits)
-  # if args.version:
-  #   version()
-  # elif args.submit:
-  #   query_data_and_submit(config)
-  # elif args.test:
-  #   test_connection(config)
-  # elif args.values:
-  #   values(config)
-  # elif args.schema:
-  #   schema(config)
-  # elif args.state:
-  #   state(config)
-  # elif args.errors:
-  #   errors(config)
-  # elif args.menu:
-  #   menu(config)
-  # elif args.date:
-  #   date(config)
-  # elif args.genconfig:
-  #   gen_config(config)
-  # else:
-  #   logging.info("Please provide an argument")
+
+  if args.version:
+    version()
+  elif args.submit:
+    query_data_and_submit(config)
+  elif args.test:
+    test_connection(config)
+  elif args.values:
+    values(config)
+  elif args.schema:
+    schema(config)
+  elif args.state:
+    state(config)
+  elif args.errors:
+    errors(config)
+  elif args.menu:
+    menu(config)
+  elif args.date:
+    date(config)
+  elif args.genconfig:
+    gen_config(config)
+  elif args.digitalout:
+    client = FroelingClient(config.port)
+    print(client.load_digital_output(b'\x00\x01'))
+  else:
+    logging.info("Please provide an argument")
