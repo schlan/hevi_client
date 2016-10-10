@@ -64,11 +64,11 @@ def heating_circuites(menu, name, child):
 
   return {
     name: {
-      **toConfig(pump, 'pump'),
-      **toConfig(party, 'party'),
-      **toConfig(flow_shall, 'flow_shall'),
-      **toConfig(flow_actual, 'flow_actual'),
-      **toConfig(mixer_on, 'mixer_on'),
-      **toConfig(mixer_off, 'mixer_off')
+      'pump': pump,
+      'party': party,
+      'mixer_off': mixer_off,
+      'mixer_on': mixer_on,
+      'flow_shall': flow_shall,
+      'flow_actual': flow_actual
     }
   }

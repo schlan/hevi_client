@@ -14,27 +14,17 @@ class HeviConfig(object):
 
     if parser.has_section('Main'):
       self._exit_if_missing('Main', ['device_token', 'port'], parser)
-      
       self.device_token = parser.get('Main', 'device_token')
-
       self.port = parser.get('Main', 'port')
       self._exit_if_file_missing(self.port)
-
-      self.heating_curcuits = self._extract_circuits(parser)
-
+      self.heating_circuits = self._extract_circuits(parser)
     else:
       self._exit_with_error('Unable to parse configuration file, [Main] section not found')
   
 
   def _extract_circuit_values(self, section, name, config):
-    if config.has_option(section, name + '_type') and config.has_option(section, name + '_address') and config.has_option(section, name + '_description'):
-      return {
-        name: {
-          'type': config.getint(section, name + '_type'),
-          'address': fr_parse_byte_string(config.get(section, name + '_address')),
-          'description': config.get(section, name + '_description')
-        }
-      }
+    if config.has_option(section, name):
+      return { name: ast.literal_eval(config.get(section, name)) }
     else:
       return None
 
@@ -46,7 +36,7 @@ class HeviConfig(object):
       if x:
         for y in x:
           result[y] = x[y]
-    return {section.split("|")[1]: result}
+    return { section.split("|")[1]: result }
 
   def _extract_circuits(self, parser):
     hc_config = list(filter(lambda x: x.startswith("hevi_hc|"), parser.sections()))
