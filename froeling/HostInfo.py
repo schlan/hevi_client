@@ -15,21 +15,21 @@ def _cpu_load():
 def _memory():
   mem = psutil.virtual_memory()
   return {
-    'mem_free': mem.free,
-    'mem_total': mem.total,
-    'mem_available': mem.available,
-    'mem_percent': mem.percent,
-    'mem_used': mem.used
+    'mem_free': str(mem.free),
+    'mem_total': str(mem.total),
+    'mem_available': str(mem.available),
+    'mem_percent': str(mem.percent),
+    'mem_used': str(mem.used)
   }
 
 def _disk_root():
   disk = psutil.disk_usage("/")
   return {
-    'disk_total': disk.total,
-    'disk_used': disk.used,
-    'disk_free': disk.free,
-    'disk_percent': disk.percent
+    'disk_total': str(disk.total),
+    'disk_used': str(disk.used),
+    'disk_free': str(disk.free),
+    'disk_percent': str(disk.percent)
   }
 
 def _uptime():
-  return { 'boot_time': int(psutil.boot_time()) }
+  return { 'boot_time': str(int(psutil.boot_time())) }

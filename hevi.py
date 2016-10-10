@@ -88,6 +88,7 @@ def query_data_and_submit(config):
   hc = _heating_circuits_config_to_json(config.heating_circuits)
   digital_outputs = _load_digital_output(client, _find_digital_output_items(config.heating_circuits))
 
+  # host info
   logging.info("Load host info")
   host = host_info()
 
@@ -102,7 +103,7 @@ def query_data_and_submit(config):
     'heating_circuits': hc
   }
 
-  print(json.dumps(data))
+  #print(json.dumps(data))
   
   logging.info("Sending data to froeling.io")
   network = Network(config.device_token)
