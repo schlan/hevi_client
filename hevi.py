@@ -12,6 +12,7 @@ from froeling.FroelingValueConverter import *
 from froeling.FroelingClient import FroelingClient
 from froeling.Configuration import HeviConfig
 from froeling.Network import Network
+from froeling.HostInfo import host_info
 
 from froeling.HeatingCircuitGenerator import print_circuit_config
 
@@ -87,13 +88,16 @@ def query_data_and_submit(config):
   hc = _heating_circuits_config_to_json(config.heating_circuits)
   digital_outputs = _load_digital_output(client, _find_digital_output_items(config.heating_circuits))
 
+  logging.info("Load host info")
+  host = host_info()
+
   data = {
     'timestamp': int(time.time()),
     'recent_values_schema': schema,
     'recent_values': values,
     'errors': errors,
     'status': state,
-    'host_state': {},
+    'host_state': host,
     'digital_outputs': digital_outputs,
     'heating_circuits': hc
   }
