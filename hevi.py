@@ -83,6 +83,7 @@ def query_data_and_submit(config):
   state['version'] = version['version']
 
   # heating circuits
+  logging.info("Load heating circuits info")
   hc = _heating_circuits_config_to_json(config.heating_circuits)
   digital_outputs = _load_digital_output(client, _find_digital_output_items(config.heating_circuits))
 
@@ -96,6 +97,8 @@ def query_data_and_submit(config):
     'digital_outputs': digital_outputs,
     'heating_circuits': hc
   }
+
+  print(json.dumps(data))
   
   logging.info("Sending data to froeling.io")
   network = Network(config.device_token)
@@ -105,11 +108,13 @@ def _load_digital_output(client, menuitems):
   result = []
   for item in menuitems:
     data = client.load_digital_output(item['address'])
-    result.append({
-      **data,
-      'description': item['description'],
-      'address': fr_hex(item['address'])
-    })
+    if data:
+      result.append({
+        **data,
+        'description': item['description'],
+        'address': fr_hex(item['address'])
+      })
+  return result
 
 def _find_digital_output_items(circuits):
   digital_outputs = []
@@ -187,7 +192,7 @@ def date(config):
 
 def gen_config(config):
   client = FroelingClient(config.port)
-  client.load_menu_structure()
+  menu = client.load_menu_structure()
   print_circuit_config(menu)
 
 def version():
