@@ -14,8 +14,8 @@ def fr_bytes(string):
 def fr_strip(value):
   return value.strip()
 
-def fr_int(value):
-  return int.from_bytes(value, byteorder='big')
+def fr_int(value, signed = False):
+  return int.from_bytes(value, byteorder='big', signed = signed)
 
 def fr_hex(value):
   return fr_string(binascii.hexlify(value))
