@@ -29,7 +29,7 @@ class HeviConfig(object):
       return None
 
   def _extract_single_circuit(self, parser, section):
-    options = ["pump", "flow_actual", "flow_shall", "mixer_on", "mixer_off", "party"]
+    options = ["pump", "flow_actual", "flow_target", "mixer_on", "mixer_off", "party"]
     data = list(map(lambda x: self._extract_circuit_values(section, x, parser), options))
     result = dict()
     for x in data:

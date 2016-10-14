@@ -7,7 +7,7 @@ def print_circuit_config(menu):
   heat = findItemByName(findSubMenuItems(menu, b'\x00\x01'), "Heizen")
 
   if heat is None:
-    logging.info("Unable to read menu ... boiler language shall be german. Please contact admin@froeling.io")
+    logging.info("Unable to read menu ... boiler language must be German. Please contact admin@froeling.io")
     return
   
   heat_items = findSubMenuItems(menu, heat['child'])
@@ -53,7 +53,7 @@ def heating_circuites(menu, name, child):
   state_items = findSubMenuItems(menu, state['child'])
 
   party = findItemByName(state_items, "Partyschalter")  
-  flow_shall = findItemByName(state_items, "Vorlauf-Solltemperatur")
+  flow_target = findItemByName(state_items, "Vorlauf-Solltemperatur")
   flow_actual = findItemByName(state_items, "Vorlauf-Isttemperatur")
 
   service = findItemByName(sub_menu, "Service")
@@ -68,7 +68,7 @@ def heating_circuites(menu, name, child):
       'party': party,
       'mixer_off': mixer_off,
       'mixer_on': mixer_on,
-      'flow_shall': flow_shall,
+      'flow_target': flow_target,
       'flow_actual': flow_actual
     }
   }
