@@ -36,39 +36,41 @@ def findItemByName(menu, name):
   else:
     None
 
-def toConfig(item, name):
-  if item:
-    return {
-      name + '_address' : str(item['address']),
-      name + '_type' : str(item['type']),
-      name + '_description' : str(item['description'])
-    }
-  else: 
-    return {}
-
 def heating_circuites(menu, name, child):
+  data = {}
+  data[name] = {}
+
   sub_menu = findSubMenuItems(menu, child)
 
   state = findItemByName(sub_menu, "Zustand")
-  state_items = findSubMenuItems(menu, state['child'])
+  if state:
+    state_items = findSubMenuItems(menu, state['child'])
+    party = findItemByName(state_items, "Partyschalter")
+    room_temp = findItemByName(state_items, "Raumtemperatur")
+    flow_target = findItemByName(state_items, "Vorlauf-Solltemperatur")
+    flow_actual = findItemByName(state_items, "Vorlauf-Isttemperatur")
 
-  party = findItemByName(state_items, "Partyschalter")  
-  flow_target = findItemByName(state_items, "Vorlauf-Solltemperatur")
-  flow_actual = findItemByName(state_items, "Vorlauf-Isttemperatur")
+    if party:
+      data[name]['party'] = party
+    if room_temp:
+      data[name]['room_temp'] = room_temp
+    if flow_target:
+      data[name]['flow_target'] = flow_target
+    if flow_actual:
+      data[name]['flow_actual'] = flow_actual
 
   service = findItemByName(sub_menu, "Service")
-  service_items = findSubMenuItems(menu, service['child'])
-  pump = findItemByName(service_items, "Heizkreispumpe")
-  mixer_on = findItemByName(service_items, "HK Mischer AUF")
-  mixer_off = findItemByName(service_items, "HK Mischer ZU")
+  if service:
+    service_items = findSubMenuItems(menu, service['child'])
+    pump = findItemByName(service_items, "Heizkreispumpe")
+    mixer_on = findItemByName(service_items, "HK Mischer AUF")
+    mixer_off = findItemByName(service_items, "HK Mischer ZU")
+  
+    if pump:
+      data[name]['pump'] = pump
+    if mixer_on:
+      data[name]['mixer_on'] = mixer_on
+    if mixer_off:
+      data[name]['mixer_off'] = mixer_off
 
-  return {
-    name: {
-      'pump': pump,
-      'party': party,
-      'mixer_off': mixer_off,
-      'mixer_on': mixer_on,
-      'flow_target': flow_target,
-      'flow_actual': flow_actual
-    }
-  }
+  return data
