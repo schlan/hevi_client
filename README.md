@@ -49,7 +49,7 @@ The output should look like this:
 If you want to submit data on a regular basis to [froeling.io](https://froeling.io), I recommend creating a crontab:
 
 ```
-$ crontabe -e
+$ crontab -e
 */5 * * * * /path/to/executeable/hevi --config /path/to/config/hevi.config --submit
 ```
 
