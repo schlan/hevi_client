@@ -43,6 +43,13 @@ The output should look like this:
 [    INFO] Hello froeling.io!
 ```
 
+### Generate additional configuration options
+
+```
+$ hevi --config hevi.config --genconfig
+```
+
+Copy & paste the generated configuarion into your `hevi.conf` configuration file.
 
 ### Cron Job 
 
