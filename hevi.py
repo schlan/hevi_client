@@ -32,7 +32,7 @@ def parse_arguments():
   group.add_argument('--state', help='Lost state', action='store_true')
   group.add_argument('--errors', help='Load errors', action='store_true')
   group.add_argument('--menu', help='Load menu structure', action='store_true')
-  group.add_argument('--genconfig', help='Genarte extra config', action='store_true')
+  group.add_argument('--genconfig', help='Generate extra config', action='store_true')
   group.add_argument('--date', help='Load device date and version', action='store_true')
 
   args = parser.parse_args()

@@ -1,11 +1,13 @@
 import os, psutil
+from version import VERSION
 
 def host_info():
   return {
     **_cpu_load(),
     **_memory(),
     **_disk_root(),
-    **_uptime()
+    **_uptime(),
+    'client_version': VERSION
   }
 
 def _cpu_load():
