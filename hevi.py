@@ -12,6 +12,9 @@ from froeling.FroelingValueConverter import *
 from froeling.FroelingClient import FroelingClient
 from froeling.Configuration import HeviConfig
 from froeling.Network import Network
+from froeling.HostInfo import host_info
+
+from froeling.HeatingCircuitGenerator import print_circuit_config
 
 from version import VERSION_STRING
 
@@ -29,6 +32,7 @@ def parse_arguments():
   group.add_argument('--state', help='Lost state', action='store_true')
   group.add_argument('--errors', help='Load errors', action='store_true')
   group.add_argument('--menu', help='Load menu structure', action='store_true')
+  group.add_argument('--genconfig', help='Generate extra config', action='store_true')
   group.add_argument('--date', help='Load device date and version', action='store_true')
 
   args = parser.parse_args()
@@ -58,25 +62,35 @@ def init_logger(debug):
 def query_data_and_submit(config):
   client = FroelingClient(config.port)
   
+  # Load errors
   errors = client.load_errors()
   logging.info("Boiler errors loaded ({0})".format(len(errors)))
 
+  # Load schema + values
   schema = client.load_recent_values_schema()
   logging.info("Value schemas loaded ({0})".format(len(schema)))
 
   values = client.load_recent_values(schema)
   logging.info("Boiler values loaded ({0})".format(len(values)))
 
-  version = client.load_version_date()
-  logging.info("Boiler version/date loaded")
-
-  state = client.load_state()
-  logging.info("Boiler state received")
-
-  state['version'] = version['version']
-
   for s in schema:
     s['address'] = fr_hex(s['address'])
+
+  # Load status info
+  version = client.load_version_date()
+  logging.info("Boiler version/date loaded")
+  state = client.load_state()
+  logging.info("Boiler state received")
+  state['version'] = version['version']
+
+  # heating circuits
+  logging.info("Load heating circuits info")
+  hc = _heating_circuits_config_to_json(config.heating_circuits)
+  digital_outputs = _load_digital_output(client, _find_digital_output_items(config.heating_circuits))
+
+  # host info
+  logging.info("Load host info")
+  host = host_info()
 
   data = {
     'timestamp': int(time.time()),
@@ -84,12 +98,55 @@ def query_data_and_submit(config):
     'recent_values': values,
     'errors': errors,
     'status': state,
-    'host_state': {}
+    'host_state': host,
+    'digital_outputs': digital_outputs,
+    'heating_circuits': hc
   }
 
+  #print(json.dumps(data))
+  
   logging.info("Sending data to froeling.io")
   network = Network(config.device_token)
   network.send_data(data)
+
+def _load_digital_output(client, menuitems):
+  result = []
+  for item in menuitems:
+    data = client.load_digital_output(item['address'])
+    if data:
+      result.append({
+        **data,
+        'description': item['description'],
+        'address': fr_hex(item['address'])
+      })
+  return result
+
+def _find_digital_output_items(circuits):
+  digital_outputs = []
+  for c in circuits:
+    circuit = circuits[c]
+    for i in circuit:
+      if circuit[i]['type'] == 17:
+        digital_outputs.append(circuit[i])
+  return digital_outputs
+
+def _menuitem_to_json(menuitem):
+  return {
+    'description': menuitem['description'],
+    'address': fr_hex(menuitem['address']),
+    'type': menuitem['type']
+  }
+
+def _heating_circuits_config_to_json(circuits):
+  new_circuits = {}
+  for c in circuits:
+    circuit = circuits[c]
+    new_circuit = dict()
+    for i in circuit:
+      new_circuit[i] = _menuitem_to_json(circuit[i])
+    new_circuits[c] = new_circuit
+  return new_circuits
+
 
 def test_connection(config):
   client = FroelingClient(config.port)
@@ -138,6 +195,11 @@ def date(config):
   t = datetime.fromtimestamp(date['timestamp']).isoformat()
   logging.info("Version: {0} | Date: {1}".format(date['version'], t))
 
+def gen_config(config):
+  client = FroelingClient(config.port)
+  menu = client.load_menu_structure()
+  print_circuit_config(menu)
+
 def version():
   logging.info(VERSION_STRING)
 
@@ -164,5 +226,7 @@ if __name__ == "__main__":
     menu(config)
   elif args.date:
     date(config)
+  elif args.genconfig:
+    gen_config(config)
   else:
     logging.info("Please provide an argument")

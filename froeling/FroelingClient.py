@@ -26,7 +26,7 @@ class FroelingClient(object):
             verify_values.append(result['body'])
         if len(verify_values) > 0:
           value = max(set(verify_values), key=verify_values.count)
-          values[fr_hex(s['address'])] = (fr_int(value) / s['factor'])
+          values[fr_hex(s['address'])] = (fr_int(value, True) / s['factor'])
     return values
 
   def load_recent_values_schema(self):
@@ -93,3 +93,8 @@ class FroelingClient(object):
     data = fr_string(result['body'][2:]).split(";")
     value = {'mode': data[0].strip(), 'state': data[1]}
     return value
+
+  def load_digital_output(self, address):
+    result = self.client.single_communication(b'\x44', address)
+    body = result['body']
+    return {'mode': body[0], 'state': body[1]}
