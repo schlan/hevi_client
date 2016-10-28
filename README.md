@@ -2,64 +2,6 @@
 
 Load data from Froeling firewood boilers that are using Lambdatronic S3200 and submit it to [froeling.io](https://froeling.io). 
 
-## Download
-
-Use one of the following links to download the latest version:
-
-- Raspberry PI/Arm based platform: [hevi-0.2.0-arm.tar.gz](https://github.com/schlan/hevi_client/releases/download/v0.2.0/hevi-0.2.0-arm.tar.gz)
-
-Extract the downloaded archive:
-
-```
-$ tar xfv hevi_*.tar.gz
-$ cd hevi_*
-$ chmod +x hevi
-# optional: add the executable to your path
-```
-
-## Configuration 
-
-A typical configuration file looks like this:
-
-```
-[Main]
-device_token = <device_token> # For submitting data to [froeling.io](https://froeling.io) please register an account and generate a device token.
-port = /dev/ttyAMA0
-```
-
-Make sure that your user has enough permissions to access the specified port.
-
-### Test
-
-To check everything is working:
-
-```
-$ hevi --config hevi.config --test
-```
-
-The output should look like this:
-
-```
-[    INFO] Hello froeling.io!
-```
-
-### Generate additional configuration options
-
-```
-$ hevi --config hevi.config --genconfig
-```
-
-Copy & paste the generated configuarion into your `hevi.conf` configuration file.
-
-### Cron Job 
-
-If you want to submit data on a regular basis to [froeling.io](https://froeling.io), I recommend creating a crontab:
-
-```
-$ crontab -e
-*/5 * * * * /path/to/executeable/hevi --config /path/to/config/hevi.config --submit
-```
-
 ## Useage
 
 ```
