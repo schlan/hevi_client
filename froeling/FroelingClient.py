@@ -62,10 +62,7 @@ class FroelingClient(object):
         error_number = body[2]
         error_info = body[3] 
         error_state = body[4]
-        
-        error_time = str(body[7]) + ':' + str(body[6]) + ':' + str(body[5])
-        error_date = str(body[8]) + '.' + str(body[9]) + '.' + str(body[10])
-        timestamp = int(datetime.strptime(error_time + " " + error_date, '%H:%M:%S %d.%m.%y').timestamp())
+        timestamp = fr_timestamp(body[7:11])
 
         description = fr_string(body[11:])
         parsed_errors.append({
@@ -80,10 +77,7 @@ class FroelingClient(object):
   def load_version_date(self):
     result = self.client.single_communication(b'\x41', b'')
     body = result['body']
-
-    date = str(body[7]) + '.' + str(body[8]) + '.' + str(body[10])
-    time = str(body[6]) + ':' + str(body[5]) + ':' + str(body[4])
-    timestamp = int(datetime.strptime(time + " " + date, '%H:%M:%S %d.%m.%y').timestamp())
+    timestamp = fr_timestamp(body[4:11])
 
     value = {'version': fr_hex(body[0:4]), 'timestamp': timestamp}
     return value
