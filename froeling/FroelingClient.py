@@ -62,7 +62,7 @@ class FroelingClient(object):
         error_number = body[2]
         error_info = body[3] 
         error_state = body[4]
-        timestamp = fr_timestamp(body[7:11])
+        timestamp = fr_timestamp(body[5:11])
 
         description = fr_string(body[11:])
         parsed_errors.append({

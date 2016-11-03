@@ -25,7 +25,6 @@ def fr_parse_byte_string(value):
   return ast.literal_eval(value)
 
 def fr_timestamp(value):
-  print("asdfasdf")
   def ensure_one(value):
     if value is 0:
       return 1
@@ -45,6 +44,6 @@ def fr_timestamp(value):
 
   day = value[3]
   month = value[4]
-  year = value[5]
+  year = value[len(value) - 1]
   date = ensure_two_digits(ensure_one(day)) + "." + ensure_two_digits(ensure_one(month)) + "." + ensure_two_digits(year)
   return int(datetime.strptime(time + " " + date, '%H:%M:%S %d.%m.%y').timestamp())
